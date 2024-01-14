@@ -1,38 +1,316 @@
-.App {
-  text-align: center;
+.body {
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 1em;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+.fetching {
+  width: 16px;
+  height: 16px;
+  background-image: url('../public/fetching.gif');
+  background-size: contain;
+  position: absolute;
+  top: 4px;
+  left: 4px;
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.files_page {
+  width: 100%;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.link-btn {
+  width: fit-content;
+  background: #44F;
+  color: white;
+  margin: 0 1em;
+  padding: .2em .5em;
+  border: 1px solid #11d;
+  border-radius: 2px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.link-btn:hover {
+  background: #11D;
+}
+
+.click {
+  cursor: pointer;
+}
+
+.click:hover {
+  background: #f7f9db;
+}
+
+.disabled {
+  pointer-events: none;
+}
+
+.delete  {
+  cursor: pointer;
+}
+
+.delete:hover {
+  background: #f88;
+}
+
+.files_header {
+  position: relative;
+}
+
+.title {
+  font-size: larger;
+  font-weight: 700;
+  margin: 0 .2em .3em .2em;
+}
+
+.size {
+  font-size: small;
+}
+
+.file_list {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #888;
+}
+
+.file_item {
+  height: 22px;
+  display: flex;
+  flex-wrap: wrap;
+  cursor: default;
+  text-align: center;
+  align-items: center;
+}
+
+.first {
+  background: #ccc;
+  border: 1px solid #888;
+  margin-top: .3em;
+}
+
+.fantom {
+  background: rgb(252, 219, 219);
+}
+
+.file_num {
+  width: 48px;
+}
+
+.file_name_1 {
+  width: 640px;
+}
+
+.file_name {
+  width: 640px;
+  text-align: left;
+  padding-left: 2px;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file_descr {
+  font-size: small;
+  padding-left: 10px;
+  color: #888;
+}
+
+.file_size {
+  width: 100px;
+}
+
+.file_date_1 {
+  width: 100px;
+}
+
+.file_date {
+  width: 100px;
+  font-size: x-small;
+}
+
+.file_down {
+  width: 80px;
+}
+
+.file_link {
+  width: 80px;
+}
+
+.file_del  {
+  width: 60px;
+}
+
+.login_page {
+  width: 400px;
+  padding: 1em;
+  border: 1px solid #888;
+  border-radius: 2px;
+  text-align: center;
+  position: relative;
+}
+
+.admin_link {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  font-size: small;
+  color: #44F;
+  cursor: pointer;
+}
+
+.admin_link:hover {
+  color: #11d;
+}
+
+.error_msg {
+  margin: .5em 0;
+  color: #f88;
+}
+
+.edit_str {
+  margin: .5em 0;
+}
+
+.username {
+  width: fit-content;
+  background: white;
+  color: #88f;
+  margin: .1em;
+  padding: .2em;
+  border: 1px solid #888;
+  border-radius: 2px;
+  text-decoration: none;
+  position: absolute;
+  top: .4em;
+  right: .2em;
+}
+
+.user_fullname {
+  font-size: small;
+  color: rgb(9, 156, 105);
+  margin-bottom: .3em;
+}
+
+.user_menu {
+  background: white;
+  border: 1px solid #888;
+  border-radius: 2px;
+  padding: 1em;
+  text-align: center;
+  position: absolute;
+  top: 2em;
+  right: 1em;
+}
+
+.user_edit {
+  width: 300px;
+  background: white;
+  padding: 1em;
+  border: 1px solid #888;
+  border-radius: 2px;
+  text-align: center;
+  position: absolute;
+  left: 400px;
+  top: 40px;
+}
+
+.user_delete {
+  background: white;
+  text-align: center;
+  position: absolute;
+  left: 400px;
+  top: -40px;
+}
+
+.error_delete {
+  padding: 0 .5em;
+  color: #f88;
+  background: white;
+  white-space: nowrap;
+  border: 1px solid #888;
+  border-radius: 2px;
+  position: absolute;
+  left: 40px;
+  top: 124px;
+}
+
+.pass_input {
+  width: 300px;
+  background: white;
+  padding: 1.3em 1em;
+  border: 1px solid #888;
+  border-radius: 2px;
+  text-align: center;
+  position: absolute;
+  left: 20px;
+  top: 130px;
+}
+
+.confirm {
+  width: 280px;
+  background: white;
+  padding: 1em;
+  border: 1px solid #888;
+  border-radius: 2px;
+  text-align: center;
+  position: absolute;
+  left: 20px;
+  top: 140px;
+}
+
+.file_edit {
+  width: 320px;
+  background: white;
+  padding: 1em;
+  border: 1px solid #888;
+  border-radius: 2px;
+  text-align: center;
+  position: absolute;
+  left: 400px;
+  top: 33px;
+}
+
+.file_delete {
+  width: 260px;
+  background: white;
+  padding: 1em;
+  border: 1px solid #888;
+  border-radius: 2px;
+  text-align: center;
+  position: absolute;
+  left: 400px;
+  top: 66px;
+}
+
+.file_description {
+  width: 300px;
+}
+
+.link_create {
+  min-width: 320px;
+  max-width: 640px;
+  background: white;
+  padding: 1em;
+  border: 1px solid #888;
+  border-radius: 2px;
+  text-align: center;
+  position: absolute;
+  left: 400px;
+  top: 66px;
+}
+
+.number3 {
+  width: 3em;
+}
+
+.number2 {
+  width: 2.5em;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
 }
