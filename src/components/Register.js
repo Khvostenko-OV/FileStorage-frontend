@@ -25,7 +25,7 @@ export default function Register() {
 
   useEffect(() => {
     if (data && data.ok === 201) {
-      request('login/','POST',{username: edit.username, password:edit.password})
+      request('user/login/','POST',{username: edit.username, password:edit.password})
     } else if (data && data.ok === 200) {
       setRedirect('..');
     } else if (data) {

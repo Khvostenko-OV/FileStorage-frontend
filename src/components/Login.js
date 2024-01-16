@@ -23,7 +23,7 @@ export default function Login() {
     <div className='login_page'>
       {redirect && <Navigate to={redirect} relative='path'/>}
       <h2>Welcome to FileStorage</h2>
-      <div className='admin_link' onClick={() => window.open(process.env.REACT_APP_ADMIN, '_blank')}>
+      <div className='admin_link' onClick={() => window.open(process.env.REACT_APP_BACKEND + 'admin/', '_blank')}>
         Admin panel
       </div>
       {errMsg && <div className='error_msg'>{errMsg}</div>}
@@ -35,7 +35,7 @@ export default function Login() {
       <div className='edit_str'>
         <label>Password: <input value={password} onChange={evt => setPassword(evt.target.value)}/></label>
       </div>
-      <button className='link-btn' onClick={() => request('login/','POST',{username: login, password:password})}>Sign in</button>
+      <button className='link-btn' onClick={() => request('user/login/','POST',{username: login, password:password})}>Sign in</button>
       <button className='link-btn' onClick={() => setRedirect('../register')}>Register</button>
     </div>
   )

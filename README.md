@@ -1,70 +1,158 @@
-# Getting Started with Create React App
+# File Storage frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Развертывание проекта:
 
-## Available Scripts
+### 1. Настройка сервера Ubuntu
 
-In the project directory, you can run:
+a) Войти на сервер под юзером root
 
-### `npm start`
+b) Инсталлировать пакеты:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+    $ apt update
+    $ apt upgrade
+    $ apt install postgresql python3-venv python3-pip nginx
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+c) Настроить Postgress, создать БД:
 
-### `npm test`
+    $ su postgres
+    $ psql
+    # ALTER USER postgres WITH PASSWORD 'postgres';
+    # CREATE DATABASE filestorage_db;
+    # \q
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+d) Создать рабочего юзера (например www):
 
-### `npm run build`
+    $ adduser www
+    $ usermod www -aG sudo
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 2. Деплой бэкенда
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+a) Войти на сервер под рабочим юзером www
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+b) Клонировать репозиторий с GitHub:
 
-### `npm run eject`
+    $ git clone https://github.com/Khvostenko-OV/FileStorage-backend
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+c) Создать виртуальную среду:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+    $ cd FileStorage-backend
+    $ python3 -m venv venv
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+d) Активировать виртуальную среду:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+    $ source venv/bin/activate
 
-## Learn More
+e) Создать файл .env с настройками проекта. *Можно использовать шаблон .env_sample*:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+    $ mv .env_sample .env
+    $ sudo nano .env
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+f) Выполнить миграции:
 
-### Code Splitting
+    $ python manage.py migrate
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+g) Собрать статику:
 
-### Analyzing the Bundle Size
+    $ python manage.py collectstatic
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+h) Создать суперюзера *(не обязательно)*:
 
-### Making a Progressive Web App
+    $ python manage.py createsuperuser
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### 3. Настройка nginx
 
-### Advanced Configuration
+a) Создать файл конфигурации:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+    $ sudo nano /etc/nginx/sites-available/default
 
-### Deployment
+*Пример файла конфигурации:*
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+    server {
+      listen 80;
+      server_name IP-сервера;
+      location /backend/static/ { root /home/www/FileStorage-backend; }
+      location / { proxy_pass http://127.0.0.1:8000; }
+    }
 
-### `npm run build` fails to minify
+b) Настроить права доступа к файлам и папкам в рабочей директрии проекта:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+*Находясь в корневой директории юзера:*
+
+    $ sudo chmod 755 FileStorage-backend
+    $ cd FileStorage-backend
+    $ sudo chmod 644 *
+    $ sudo chmod 755 backend
+
+*и далее применить sudo chmod 755 ко всем папкам, вложенным в backend*
+
+c) Запустить nginx:
+
+    $ sudo service nginx start
+
+d) Запустить WSGI:
+
+    $ gunicorn back.wsgi -b 127.0.0.1:8000
+
+e) Остановка WSGI:
+
+    $ fuser -k 8000/tcp
+
+### 4. Деплой фронтенда
+
+a) Клонировать репозиторий:
+
+    $ git clone https://github.com/Khvostenko-OV/FileStorage-frontend
+
+b) Войти в созданную папку. Отредактировать файл .env *(задать один параметр - IP-сервера)*
+
+c) Собрать бандл:
+
+    $ npm run build
+
+d) Войти на сервер под рабочим юзером www
+
+e) Создать директорию и скопировать в нее бандл фронтенда:
+
+    $ mkdir FileStorage-frontend
+
+*Копирование:*
+
+    $ scp -r ./build/* www@IP-сервера:/home/www/FileStorage-frontend/
+
+f) Отредактировать файл конфигурации nginx:
+
+    $ sudo nano /etc/nginx/sites-available/default
+
+*Пример файла конфигурации:*
+
+    server {
+      listen 80;
+      listen [::]:80;
+
+      server_name IP-сервера;
+
+      location /backend/static/ { root /home/www/FileStorage-backend; }
+
+      location ~*^/(admin|user|storage) {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+      }
+
+      location / {
+        root /home/www/FileStorage-frontend;
+        index index.html;
+        try_files $uri $uri/ /index.html;
+      }
+    }
+
+g) Перезагрузить конфигурационный файл:
+
+    $ sudo nginx -s reload
+
+h) Запустить WSGI:
+
+    $ gunicorn back.wsgi -b 127.0.0.1:8000

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import useFetch from '../hooks/useFetch';
+import copyToClipboard from '../hooks/copyToClipboard';
 
 export default function LinkCreate({ file, close }) {
   const [duration, setDuration] = useState({days: 30, hours:0, minutes: 0});
@@ -15,10 +16,6 @@ export default function LinkCreate({ file, close }) {
     );
   }
 
-  const copyLink = () => {
-    navigator.clipboard.writeText(link.href);
-  }
-
   useEffect(() => {
     if (data && data.ok) {
       setLink(data.link);
@@ -27,13 +24,15 @@ export default function LinkCreate({ file, close }) {
     }
   }, [data]);
 
-
   useEffect(() => { setErr(error) }, [error]);
 
   if (link) return (
     <div className='link_create'>
       <div className='title'>Download link for file '{file.name}'</div>
-      <div className='edit_str'>{link.href} <button className='cancel-btn' title='Copy link' onClick={copyLink}>📋</button></div>
+      <div className='edit_str'>
+        {link.href} <button className='cancel-btn' title='Copy link' 
+                            onClick={() => copyToClipboard(link.href)}>📋</button>
+      </div>
       <div className='edit_str'>Expired at: {link.expire_at? link.expire_at.substring(0,19) + ' UTC' : 'never'}</div>
       <button className='cancel-btn' onClick={close}>Close</button>
     </div>
@@ -45,7 +44,7 @@ export default function LinkCreate({ file, close }) {
       {errMsg && <div className='error_msg'>{errMsg}</div>}
       {fetching && <div className='fetching'>.</div>}
 
-      <div>Expired after (0.0.0 - never)</div>
+      <div>Expired after (0.0.0 - never):</div>
       <div className='edit_str'>
         <label>Days:<input className='number3' type='number' name='days' value={duration.days} onChange={change}/></label>
         <label> Hours:<input className='number2' type='number' name='hours' value={duration.hours} onChange={change}/></label>

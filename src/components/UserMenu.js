@@ -4,7 +4,7 @@ export default function UserMenu({ user, action, close }) {
       <div className='title'>{user.username}</div>
       <div className='user_fullname'>{user.first_name} {user.last_name}</div>
       {user.is_admin && 
-        <div className='click' onClick={() => window.open(process.env.REACT_APP_ADMIN, '_blank')}>
+        <div className='click' onClick={() => window.open(process.env.REACT_APP_BACKEND + 'admin/', '_blank')}>
           Admin panel
         </div>
       }

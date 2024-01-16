@@ -51,7 +51,7 @@ export default function FileList() {
 
   useEffect(() => {
     if (action === 'logout') {
-      request('logout/', 'POST', {}, '', '../login');
+      request('user/logout/', 'POST', {}, '', '../login');
     }
   }, [action]);
 
